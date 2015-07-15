@@ -1,0 +1,20 @@
+How to follow this example:
+
+ Search for "DefaultXmlValidator" in the pdf report. Observe that the Fortify Priority is "High".
+
+ Search for instance ID "153CC11F608779051CB3B154066FA6CD" in both the "fortify_-_OWASP_Top_Ten_2010.xml", "fortify_-_Fortify_Developer_Workbook1.xml", and "fortify.fpr:audit.fvdl" files. (unzip fortify.fpr to see the fvdl file)
+
+ Observe that "InstanceSeverity" in the fvdl file is "4" which maps to "Blocker" in Sonar or "Critical" in Fortify (doesn't agree with the "High" value in the PDF or in Fortify's
+  Audit Workbench UI). In the OWASP and Developer_Workbook XML reports the "Friority" value of "High" is correct. 
+
+Recommendation: 
+
+ Do not bind fortify-sonar-plugin to the FVDL file's format because it doesn't appear to be a versioned interface contract. Instead, have it parse one of
+ Fortify's XML reports such as "Developer_Workbook". We could use the command below to produce a report (included in sample project) that contains all of the details
+ needed.
+
+ /software/fortify/bin/ReportGenerator -format xml -f fortify-scan-result.xml -source fortify.fpr -template "DeveloperWorkbook.xml" -Xms50m -Xmx250m
+
+Note:
+
+ HP's "HP Fortify on Demand_06-16-2014.pdf" documentation states "Fortify Priority Order is the same thing as Severity. Both terms refer to the hierarchy of seriousness among vulnerabilities (Critical, High, Medium, Low, Best Practices, Info)." This suggests that the "instanceSeverity" values in the FVDL file not mapping to a Fortify Priority may be a bug. However, I still recommend that we use Fortify's report output rather than pursue a potential fix to the FVDL file for the reason stated above.

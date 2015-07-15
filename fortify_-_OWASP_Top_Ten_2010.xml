@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ReportDefinition type="xml">
+    <TemplateName>OWASP Top Ten 2010</TemplateName>
+    <TemplatePath></TemplatePath>
+    <LogoPath>/fortify.jpg</LogoPath>
+    <Footnote>Copyright 2014 Hewlett-Packard Development Company, L.P.</Footnote>
+    <UserName>igen194</UserName>
+    <ReportSection optionalSubsections="false" enabled="true">
+        <Title>Report Overview</Title>
+        <SubSection enabled="true">
+            <Title>Report Summary</Title>
+            <Description>This provides a high level summary of the findings that the analysis produced. Also includes basic information on the scope of the scan.</Description>
+            <Text>On May 27, 2015, a source code review was performed over the fortify-priority-inconsistency-demo code base. 4 files, 22 LOC (Executable) were scanned. A total of 6 issues were uncovered during the analysis. This report provides a comprehensive description of all the types of OWASP Top Ten 2010 issues found in this project. Specific examples and source code are provided for each issue type.</Text>
+        </SubSection>
+        <SubSection enabled="true">
+            <Title>Issue Summary</Title>
+            <Description>A table summarizing the number of issues found and the breakdown of issues in each OWASP Top Ten 2010 category</Description>
+            <IssueListing limit="-1" listing="false">
+                <Refinement></Refinement>
+                <Chart chartType="table">
+                    <Axis></Axis>
+                    <MajorAttribute>Analysis</MajorAttribute>
+                    <GroupingSection count="1">
+                        <groupTitle>Build Misconfiguration: External Maven Dependency Repository</groupTitle>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>J2EE Bad Practices: Leftover Debug Code</groupTitle>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>Missing XML Validation</groupTitle>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>Poor Logging Practice: Use of a System Output Stream</groupTitle>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>XML Entity Expansion Injection</groupTitle>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>XML External Entity Injection</groupTitle>
+                    </GroupingSection>
+                </Chart>
+            </IssueListing>
+        </SubSection>
+    </ReportSection>
+    <ReportSection optionalSubsections="true" enabled="true">
+        <Title>Issue Breakdown by OWASP Top Ten 2010</Title>
+        <SubSection enabled="true">
+            <Title>Issue Breakdown by OWASP Top Ten 2010</Title>
+            <IssueListing limit="-1" listing="false">
+                <Refinement></Refinement>
+                <Chart chartType="pie">
+                    <Axis></Axis>
+                    <MajorAttribute>Analysis</MajorAttribute>
+                    <GroupingSection count="1">
+                        <groupTitle>Build Misconfiguration: External Maven Dependency Repository</groupTitle>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>J2EE Bad Practices: Leftover Debug Code</groupTitle>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>Missing XML Validation</groupTitle>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>Poor Logging Practice: Use of a System Output Stream</groupTitle>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>XML Entity Expansion Injection</groupTitle>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>XML External Entity Injection</groupTitle>
+                    </GroupingSection>
+                </Chart>
+            </IssueListing>
+        </SubSection>
+    </ReportSection>
+    <ReportSection optionalSubsections="true" enabled="true">
+        <Title>Results Outline</Title>
+        <SubSection enabled="true">
+            <Title>Vulnerabilties By OWASP Top Ten 2010</Title>
+            <Description>Results by OWASP Top Ten 2010</Description>
+            <IssueListing limit="-1" listing="true">
+                <Refinement>[OWASP Top Ten 2010]:!Not Covered</Refinement>
+                <Chart chartType="list">
+                    <Axis></Axis>
+                    <MajorAttribute>Analysis</MajorAttribute>
+                    <GroupingSection count="1">
+                        <groupTitle>Build Misconfiguration: External Maven Dependency Repository</groupTitle>
+                        <MajorAttributeSummary>
+                            <MetaInfo>
+<Name>Abstract</Name>
+<Value>This maven build script relies on external sources, which could allow an attacker to insert malicious code into the final product or to take control of the build machine.</Value>
+                            </MetaInfo>
+                            <MetaInfo>
+<Name>Explanation</Name>
+<Value>Several tools exist within the Java development world to aid in dependency management: both Apache Ant and Apache Maven build systems include functionality specifically designed to help manage dependencies and Apache Ivy is developed explicitly as a dependency manager. Although there are differences in their behavior, these tools share the common functionality that they automatically download external dependencies specified in the build process at build time. This makes it much easier for developer B to build software in the same manner as developer A. Developers just store dependency information in the build file, which means that each developer and build engineer has a consistent way to obtain dependencies, compile the code, and deploy without the dependency management hassles involved in manual dependency management. The following examples illustrate how Ivy, Ant and Maven can be used to manage external dependencies as part of a build process.
+
+Under Maven, instead of listing explicit URLs from which to retrieve the dependencies, developers specify the dependency names and versions and Maven relies on its underlying configuration to identify the server(s) from which to retrieve the dependencies. For commonly used components this saves the developer from having to researching dependency locations.
+
+Example 1: The following except from a Maven pom.xml file shows how a developer can specify multiple external dependencies using their name and version:
+
+
+&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;commons-logging&lt;/groupId&gt;
+    &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;
+    &lt;version&gt;1.1&lt;/version&gt;
+  &lt;/dependency&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;javax.jms&lt;/groupId&gt;
+    &lt;artifactId&gt;jms&lt;/artifactId&gt;
+    &lt;version&gt;1.1&lt;/version&gt;
+  &lt;/dependency&gt;
+  ...
+&lt;/dependencies&gt;
+
+
+Two distinct types of attack scenarios affect these systems: An attacker could either compromise the server hosting the dependency or compromise the DNS server the build machine uses to redirect requests for hostname of the server hosting the dependency to a machine controlled by the attacker. Both scenarios result in the attacker gaining the ability to inject a malicious version of a dependency into a build running on an otherwise uncompromised machine.
+
+Regardless of the attack vector used to deliver the Trojan dependency, these scenarios share the common element that the build system blindly accepts the malicious binary and includes it in the build. Because the build system has no recourse for rejecting the malicious binary and existing security mechanisms, such as code review, typically focus on internally-developed code rather than external dependencies, this type of attack has a strong potential to go unnoticed as it spreads through the development environment and potentially into production.
+
+Although there is some risk of a compromised dependency being introduced into a manual build process, by the tendency of automated build systems to retrieve the dependency from an external source each time the build system is run in a new environment greatly increases the window of opportunity for an attacker. An attacker need only compromise the dependency server or the DNS server during one of the many times the dependency is retrieved in order to compromise the machine on which the build is occurring.</Value>
+                            </MetaInfo>
+                            <MetaInfo>
+<Name>Recommendations</Name>
+<Value>The simplest solution is to refrain from adopting automated dependency management systems altogether. Managing dependencies manually eliminates the potential for unexpected behavior caused by the build system. Obviously, the an attacker could still mount one of the attacks described above to coincide with the manual retrieval of a dependency, but limiting the frequency with which the dependency must be retrieved significantly reduces the window of opportunity for an attacker. Finally, this solution forces the development organization to rely on what is ostensibly an antiquated build system. A system based on manual dependency management is often more difficult to use and maintain, and may be unacceptable in some software development environments.
+
+The second solution is a hybrid of the traditional manual dependency management approach and the fully automated solution that is popular today. The biggest advantage of the manual build process is the decreased window of attack, which can be achieved in a semi-automated system by replicating external dependency servers internally. Any build system that requires an external dependency can then point to the internal server using a hard-coded internal IP address to bypass the risk of DNS-based attacks. As new dependencies are added and new versions released, they can be downloaded once and included on the internal repository. This solution reduces the attack opportunities and allows the organization leverage existing internal network security infrastructure.
+
+To implement this solution using Maven, a project should have the IP address for an internal repository hard coded the pom.xml. Specifying the IP address in the pom.xml ensures the internal repository will be used by the corresponding build, but is tied to a specific project. Alternatively, the IP address can be specified in settings.xml, which makes the configuration easier to share across multiple projects.
+
+Example 2: The following Maven pom.xml demonstrates the use of an explicit internal IP address (the entries can also be used in settings.xml):
+
+
+&lt;project&gt;
+  ...
+  &lt;repositories&gt;
+    &lt;repository&gt;
+      &lt;releases&gt;
+        &lt;enabled&gt;true&lt;/enabled&gt;
+        &lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
+        &lt;checksumPolicy&gt;warn&lt;/checksumPolicy&gt;
+      &lt;/releases&gt;
+      &lt;snapshots&gt;
+        &lt;enabled&gt;true&lt;/enabled&gt;
+        &lt;updatePolicy&gt;never&lt;/updatePolicy&gt;
+        &lt;checksumPolicy&gt;fail&lt;/checksumPolicy&gt;
+      &lt;/snapshots&gt;
+      &lt;id&gt;central&lt;/id&gt;
+      &lt;name&gt;Internal Repository&lt;/name&gt;
+      &lt;url&gt;http://172.16.1.13/maven2&lt;/url&gt;
+      &lt;layout&gt;default&lt;/layout&gt;
+    &lt;/repository&gt;
+  &lt;/repositories&gt;
+  &lt;pluginRepositories&gt;
+    ...
+  &lt;/pluginRepositories&gt;
+  ...
+&lt;/project&gt;
+</Value>
+                            </MetaInfo>
+                            <AttributeValue>
+<Name>&lt;Unaudited&gt;</Name>
+<Count>1</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Not an Issue</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Reliability Issue</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Bad Practice</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Suspicious</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Exploitable</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                        </MajorAttributeSummary>
+                        <Issue ruleID="FF57412F-DD28-44DE-8F4F-0AD39620768C" iid="87E3EC5CC8154C006783CC461A6DDEEB">
+                            <Category>Build Misconfiguration: External Maven Dependency Repository</Category>
+                            <Folder>Low</Folder>
+                            <Kingdom>Environment</Kingdom>
+                            <Abstract>This maven build script relies on external sources, which could allow an attacker to insert malicious code into the final product or to take control of the build machine.</Abstract>
+                            <Friority>Low</Friority>
+                            <Primary>
+<FileName>pom.xml</FileName>
+<FilePath>pom.xml</FilePath>
+<LineStart>2</LineStart>
+<Snippet>&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+  xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+</Snippet>
+                            </Primary>
+                        </Issue>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>J2EE Bad Practices: Leftover Debug Code</groupTitle>
+                        <MajorAttributeSummary>
+                            <MetaInfo>
+<Name>Abstract</Name>
+<Value>Debug code can create unintended entry points in a deployed web application.</Value>
+                            </MetaInfo>
+                            <MetaInfo>
+<Name>Explanation</Name>
+<Value>A common development practice is to add &quot;back door&quot; code specifically designed for debugging or testing purposes that is not intended to be shipped or deployed with the application. When this sort of debug code is accidentally left in the application, the application is open to unintended modes of interaction. These back door entry points create security risks because they are not considered during design or testing and fall outside of the expected operating conditions of the application.
+
+The most common example of forgotten debug code is a main() method appearing in a web application. Although this is an acceptable practice during product development, classes that are part of a production J2EE application should not define a main().</Value>
+                            </MetaInfo>
+                            <MetaInfo>
+<Name>Recommendations</Name>
+<Value>Remove debug code before deploying a production version of an application. Regardless of whether a direct security threat can be articulated, it is unlikely that there is a legitimate reason for such code to remain in the application after the early stages of development.</Value>
+                            </MetaInfo>
+                            <MetaInfo>
+<Name>Tips</Name>
+<Value>1. The presence of a main() method may represent the tip of an iceberg. When you find a main(), look for other indications that developers were rushed or otherwise not able to conclude their efforts normally.
+
+2. If you are auditing a non-J2EE Java application, the J2EE Bad Practices category might not apply to your environment. If this is the case, you can use AuditGuide to suppress these issues.</Value>
+                            </MetaInfo>
+                            <AttributeValue>
+<Name>&lt;Unaudited&gt;</Name>
+<Count>1</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Not an Issue</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Reliability Issue</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Bad Practice</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Suspicious</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Exploitable</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                        </MajorAttributeSummary>
+                        <Issue ruleID="625EEE1F-464F-42DC-85D6-269A637EF747" iid="924E455FE37088AA641C12EE5518B384">
+                            <Category>J2EE Bad Practices: Leftover Debug Code</Category>
+                            <Folder>Low</Folder>
+                            <Kingdom>Encapsulation</Kingdom>
+                            <Abstract>The class App contains debug code, which can create unintended entry points in a deployed web application.</Abstract>
+                            <Friority>Low</Friority>
+                            <Primary>
+<FileName>App.java</FileName>
+<FilePath>src/main/java/demo/fortify/priority/fortify_priority_inconsistency_demo/App.java</FilePath>
+<LineStart>9</LineStart>
+<Snippet>public class App 
+{
+    public static void main( String[] args )
+    {
+        System.out.println( &quot;Hello World!&quot; );</Snippet>
+                            </Primary>
+                        </Issue>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>Missing XML Validation</groupTitle>
+                        <MajorAttributeSummary>
+                            <MetaInfo>
+<Name>Abstract</Name>
+<Value>Failure to enable validation when parsing XML gives an attacker the opportunity to supply malicious input.</Value>
+                            </MetaInfo>
+                            <MetaInfo>
+<Name>Explanation</Name>
+<Value>Most successful attacks begin with a violation of the programmer's assumptions. By accepting an XML document without validating it against a DTD or XML schema, the programmer leaves a door open for attackers to provide unexpected, unreasonable, or malicious input. It is not possible for an XML parser to validate all aspects of a document's content; a parser cannot understand the complete semantics of the data. However, a parser can do a complete and thorough job of checking the document's structure and therefore guarantee to the code that processes the document that the content is well-formed.
+</Value>
+                            </MetaInfo>
+                            <MetaInfo>
+<Name>Recommendations</Name>
+<Value>Always enable validation when you create an XML parser or parser factory. If enabling validation causes problems because the rules for defining a well-formed document are Byzantine or altogether unknown, chances are good that there are security errors nearby.
+
+Below are examples that demonstrate how to enable validation for the Xerces parsers (both DOM and SAX):
+
+
+org.apache.xerces.framework.XMLParser: parser.setValidation(true);
+org.apache.xerces.framework.XMLParser: parser.setValidationSchema(true);
+
+
+The following examples demonstrate how to enable validation for the SAX and DOM parser factories in the javax library.
+
+javax SAX parser factory:
+
+
+javax.xml.parsers.SAXParserFactory: factory.setValidating(true);
+javax.xml.parsers.SAXParserFactory: factory.setFeature(&quot;http://xml.org/sax/features/validation&quot;, true);
+
+
+javax DOM parser factory:
+
+
+javax.xml.parsers.DocumentBuilderFactory: factory.setValidating(true);
+
+
+The following examples demonstrate how to enable validation for individual parsers and XMLReaders in the javax library.
+
+Note: The HP Fortify Software Security Research Group does not recommend enabling validation by this method. Instead, you should enable validation at the parser factory.
+
+javax SAX parser and reader:
+
+
+javax.xml.parsers.SAXParser: parser.setProperty(&quot;http://xml.org/sax/features/validation&quot;, new Boolean(true));
+org.xml.sax.XMLReader: reader.setFeature(&quot;http://xml.org/sax/features/validation&quot;, true);
+
+
+The following examples demonstrate how to set the XML return type for Apache Axis.
+
+Axis client Call:
+
+
+call.addParameter(&quot;testParam&quot;, org.apache.axis.Constants.XSD_STRING, javax.xml.rpc.ParameterMode.IN);
+call.setReturnType(org.apache.axis.Constants.XSD_STRING);
+String ret = (String) call.invoke( new Object[] { &quot;Hello!&quot; } );
+</Value>
+                            </MetaInfo>
+                            <MetaInfo>
+<Name>Tips</Name>
+<Value>1. The HP Fortify Secure Coding Rulepacks checks to ensure that javax parser factories enable validation before they are used to create parsers. By ensuring that the parser factory always creates validating parsers, there is less opportunity for error when creating and using a parser.</Value>
+                            </MetaInfo>
+                            <AttributeValue>
+<Name>&lt;Unaudited&gt;</Name>
+<Count>1</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Not an Issue</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Reliability Issue</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Bad Practice</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Suspicious</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Exploitable</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                        </MajorAttributeSummary>
+                        <Issue ruleID="6205D59D-EEEC-42B0-9522-1FE15F05E302" iid="842C084C52B59386C84362D555463F09">
+                            <Category>Missing XML Validation</Category>
+                            <Folder>Low</Folder>
+                            <Kingdom>Input Validation and Representation</Kingdom>
+                            <Abstract>The method parseDocument() in DefaultXmlValidator.java fails to enable validation before parsing XML on line 54, which gives an attacker the opportunity to supply malicious input.</Abstract>
+                            <Friority>Low</Friority>
+                            <Primary>
+<FileName>DefaultXmlValidator.java</FileName>
+<FilePath>src/main/java/demo/fortify/priority/fortify_priority_inconsistency_demo/DefaultXmlValidator.java</FilePath>
+<LineStart>54</LineStart>
+<Snippet>
+    final ByteArrayInputStream inputStream = new ByteArrayInputStream(xmlString.getBytes(Charset.forName(&quot;UTF-8&quot;)));
+    final Document document = parser.parse(inputStream);
+    inputStream.reset();
+    inputStream.close();</Snippet>
+                            </Primary>
+                        </Issue>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>Poor Logging Practice: Use of a System Output Stream</groupTitle>
+                        <MajorAttributeSummary>
+                            <MetaInfo>
+<Name>Abstract</Name>
+<Value>Using System.out or System.err rather than a dedicated logging facility makes it difficult to monitor the behavior of the program.</Value>
+                            </MetaInfo>
+                            <MetaInfo>
+<Name>Explanation</Name>
+<Value>Example 1: The first Java program that a developer learns to write often looks like this:
+
+
+public class MyClass
+  public static void main(String[] args) {
+    System.out.println(&quot;hello world&quot;);
+  }
+}
+
+
+While most programmers go on to learn many nuances and subtleties about Java, a surprising number hang on to this first lesson and never give up on writing messages to standard output using System.out.println().
+
+The problem is that writing directly to standard output or standard error is often used as an unstructured form of logging. Structured logging facilities provide features like logging levels, uniform formatting, a logger identifier, timestamps, and, perhaps most critically, the ability to direct the log messages to the right place. When the use of system output streams is jumbled together with the code that uses loggers properly, the result is often a well-kept log that is missing critical information.
+
+Developers widely accept the need for structured logging, but many continue to use system output streams in their &quot;pre-production&quot; development. If the code you are reviewing is past the initial phases of development, use of System.out or System.err may indicate an oversight in the move to a structured logging system.</Value>
+                            </MetaInfo>
+                            <MetaInfo>
+<Name>Recommendations</Name>
+<Value>Use a Java logging facility rather than System.out or System.err.
+
+Example 2: For example, the &quot;hello world&quot; program above can be re-written using log4j like this:
+
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.BasicConfigurator;
+
+public class MyClass {
+  private final static Logger logger =
+            Logger.getLogger(MyClass.class);
+
+  public static void main(String[] args) {
+    BasicConfigurator.configure();
+    logger.info(&quot;hello world&quot;);
+  }
+}
+</Value>
+                            </MetaInfo>
+                            <AttributeValue>
+<Name>&lt;Unaudited&gt;</Name>
+<Count>1</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Not an Issue</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Reliability Issue</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Bad Practice</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Suspicious</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Exploitable</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                        </MajorAttributeSummary>
+                        <Issue ruleID="F972FE42-6C15-47D2-BD5C-448166A574C2" iid="BEC9E056897191C59CF6E21D7E0FC7F8">
+                            <Category>Poor Logging Practice: Use of a System Output Stream</Category>
+                            <Folder>Low</Folder>
+                            <Kingdom>Encapsulation</Kingdom>
+                            <Abstract>Using println() rather than a dedicated logging facility makes it difficult to monitor the behavior of the program.</Abstract>
+                            <Friority>Low</Friority>
+                            <Primary>
+<FileName>App.java</FileName>
+<FilePath>src/main/java/demo/fortify/priority/fortify_priority_inconsistency_demo/App.java</FilePath>
+<LineStart>11</LineStart>
+<Snippet>    public static void main( String[] args )
+    {
+        System.out.println( &quot;Hello World!&quot; );
+    }
+}</Snippet>
+                            </Primary>
+                        </Issue>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>XML Entity Expansion Injection</groupTitle>
+                        <MajorAttributeSummary>
+                            <MetaInfo>
+<Name>Abstract</Name>
+<Value>Using XML parsers configured to not prevent nor limit Document Type Definition (DTD) entity resolution can expose the parser to an XML Entity Expansion injection</Value>
+                            </MetaInfo>
+                            <MetaInfo>
+<Name>Explanation</Name>
+<Value>XML Entity Expansion injection also known as XML Bombs are DoS attacks that benefit from valid and well-formed XML blocks that expand exponentially until they exhaust the server allocated resources. XML allows to define custom entities which act as string substitution macros. By nesting recurrent entity resolutions, an attacker can easily crash the server resources.
+
+The following XML document shows an example of an XML Bomb.
+
+&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE lolz [
+  &lt;!ENTITY lol &quot;lol&quot;&gt;
+  &lt;!ENTITY lol2 &quot;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&quot;&gt;
+  &lt;!ENTITY lol3 &quot;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&quot;&gt;
+  &lt;!ENTITY lol4 &quot;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&quot;&gt;
+  &lt;!ENTITY lol5 &quot;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&quot;&gt;
+  &lt;!ENTITY lol6 &quot;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&quot;&gt;
+  &lt;!ENTITY lol7 &quot;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&quot;&gt;
+  &lt;!ENTITY lol8 &quot;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&quot;&gt;
+  &lt;!ENTITY lol9 &quot;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&quot;&gt;
+]&gt;
+&lt;lolz&gt;&amp;lol9;&lt;/lolz&gt;
+
+
+This test could crash the server by expanding the small XML document into more than 3GB in memory.
+</Value>
+                            </MetaInfo>
+                            <MetaInfo>
+<Name>Recommendations</Name>
+<Value>An XML parser should be configured securely so that it does not allow document type definition (DTD) custom entities as part of an incoming XML document.
+
+To avoid XML Entity Expansion injection the &quot;secure-processing&quot; property should be set for an XML factory, parser or reader:
+
+factory.setFeature(&quot;http://javax.xml.XMLConstants/feature/secure-processing&quot;, true);
+
+
+In JAXP 1.3 and earlier versions, when the secure processing feature is on, default limitations are set for DOM and SAX parsers. These limits are:
+
+entityExpansionLimit = 64,000
+elementAttributeLimit = 10,000
+
+Since JAXP 1.4, the secure processing feature is turned on by default. In addition to the above limits, a new maxOccur limit is added to the validating parser. The limit is:
+
+maxOccur = 5,000
+
+
+If inline DOCTYPE declaration is not needed, it can be completely disabled with the following property:
+
+factory.setFeature(&quot;http://apache.org/xml/features/disallow-doctype-decl&quot;, true);
+
+</Value>
+                            </MetaInfo>
+                            <AttributeValue>
+<Name>&lt;Unaudited&gt;</Name>
+<Count>1</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Not an Issue</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Reliability Issue</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Bad Practice</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Suspicious</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Exploitable</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                        </MajorAttributeSummary>
+                        <Issue ruleID="4C61DD8D-70DA-4444-9DBF-6817387B1ED9" iid="99C47E88013FE555BA273881CE53C21D">
+                            <Category>XML Entity Expansion Injection</Category>
+                            <Folder>Low</Folder>
+                            <Kingdom>Input Validation and Representation</Kingdom>
+                            <Abstract>The XML parser configured in DefaultXmlValidator.java:54 does not prevent nor limit Document Type Definition (DTD) entity resolution. This can expose the parser to an XML Entity Expansion injection.</Abstract>
+                            <Friority>Low</Friority>
+                            <Primary>
+<FileName>DefaultXmlValidator.java</FileName>
+<FilePath>src/main/java/demo/fortify/priority/fortify_priority_inconsistency_demo/DefaultXmlValidator.java</FilePath>
+<LineStart>54</LineStart>
+<Snippet>
+    final ByteArrayInputStream inputStream = new ByteArrayInputStream(xmlString.getBytes(Charset.forName(&quot;UTF-8&quot;)));
+    final Document document = parser.parse(inputStream);
+    inputStream.reset();
+    inputStream.close();</Snippet>
+                            </Primary>
+                        </Issue>
+                    </GroupingSection>
+                    <GroupingSection count="1">
+                        <groupTitle>XML External Entity Injection</groupTitle>
+                        <MajorAttributeSummary>
+                            <MetaInfo>
+<Name>Abstract</Name>
+<Value>Using XML parsers configured to not prevent nor limit external entities resolution can expose the parser to an XML External Entities attack</Value>
+                            </MetaInfo>
+                            <MetaInfo>
+<Name>Explanation</Name>
+<Value>XML External Entities attacks benefit from an XML feature to build documents dynamically at the time of processing. An XML entity allows inclusion of data dynamically from a given resource. External entities allow an XML document to include data from an external URI. Unless configured to do otherwise, external entities force the XML parser to access the resource specified by the URI, e.g., a file on the local machine or on a remote system. This behavior exposes the application to XML External Entity (XXE) attacks, which can be used to perform denial of service of the local system, gain unauthorized access to files on the local machine, scan remote machines, and perform denial of service of remote systems.
+
+The following XML document shows an example of an XXE attack.
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+ &lt;!DOCTYPE foo [
+  &lt;!ELEMENT foo ANY &gt;
+  &lt;!ENTITY xxe SYSTEM &quot;file:///dev/random&quot; &gt;]&gt;&lt;foo&gt;&amp;xxe;&lt;/foo&gt;
+
+
+This example could crash the server (on a UNIX system), if the XML parser attempts to substitute the entity with the contents of the /dev/random file.
+</Value>
+                            </MetaInfo>
+                            <MetaInfo>
+<Name>Recommendations</Name>
+<Value>An XML parser should be configured securely so that it does not allow external entities as part of an incoming XML document.
+
+To avoid XXE injections the following properties should be set for an XML factory, parser or reader:
+
+
+factory.setFeature(&quot;http://xml.org/sax/features/external-general-entities&quot;, false);
+factory.setFeature(&quot;http://xml.org/sax/features/external-parameter-entities&quot;, false);
+
+
+If inline DOCTYPE declaration is not needed, it can be completely disabled with the following property:
+
+factory.setFeature(&quot;http://apache.org/xml/features/disallow-doctype-decl&quot;, true);
+
+</Value>
+                            </MetaInfo>
+                            <AttributeValue>
+<Name>&lt;Unaudited&gt;</Name>
+<Count>1</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Not an Issue</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Reliability Issue</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Bad Practice</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Suspicious</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                            <AttributeValue>
+<Name>Exploitable</Name>
+<Count>0</Count>
+                            </AttributeValue>
+                        </MajorAttributeSummary>
+                        <Issue ruleID="93A88C53-D00C-4A86-9747-D9A0B3176085" iid="153CC11F608779051CB3B154066FA6CD">
+                            <Category>XML External Entity Injection</Category>
+                            <Folder>High</Folder>
+                            <Kingdom>Input Validation and Representation</Kingdom>
+                            <Abstract>XML parser configured in DefaultXmlValidator.java:54 does not prevent nor limit external entities resolution. This can expose the parser to an XML External Entities attack.</Abstract>
+                            <Friority>High</Friority>
+                            <Primary>
+<FileName>DefaultXmlValidator.java</FileName>
+<FilePath>src/main/java/demo/fortify/priority/fortify_priority_inconsistency_demo/DefaultXmlValidator.java</FilePath>
+<LineStart>54</LineStart>
+<Snippet>
+    final ByteArrayInputStream inputStream = new ByteArrayInputStream(xmlString.getBytes(Charset.forName(&quot;UTF-8&quot;)));
+    final Document document = parser.parse(inputStream);
+    inputStream.reset();
+    inputStream.close();</Snippet>
+                            </Primary>
+                        </Issue>
+                    </GroupingSection>
+                </Chart>
+            </IssueListing>
+        </SubSection>
+    </ReportSection>
+</ReportDefinition>
